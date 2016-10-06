@@ -10,7 +10,7 @@ lab.experiment('hapi-deprecated', () => {
   lab.beforeEach((done) => {
     server = new Hapi.Server({
       debug: {
-        log: ['warning', 'hapi-deprecated']
+        log: ['warning', 'hapi-deprecated', 'caution']
       }
     });
     server.connection({ port: 3000 });
@@ -32,6 +32,7 @@ lab.experiment('hapi-deprecated', () => {
       options: {}
     }, () => {
       let called = false;
+      const oldError = console.error;
       console.error = (pre, tags, msg) => {
         called = msg;
       };
@@ -39,6 +40,41 @@ lab.experiment('hapi-deprecated', () => {
         // call the route
         server.inject('/example', () => {
           code.expect(called).to.include("route '/example' is deprecated");
+          console.error = oldError;
+          done();
+        });
+      });
+    });
+  });
+  lab.test(' loads as a plugin with non-default options', (done) => {
+    server.route({
+      path: '/example',
+      method: 'GET',
+      config: {
+        tags: ['defunct'],
+      },
+      handler: (request, reply) => {
+        reply();
+      }
+    });
+    server.register({
+      register: deprecatedPlugin,
+      options: {
+        deprecatedFilter: 'defunct',
+        deprecatedTags: ['caution']
+      }
+    }, () => {
+      let called = false;
+      let calledTags;
+      console.error = (pre, tags, msg) => {
+        calledTags = tags;
+        called = true;
+      };
+      server.start(() => {
+        // call the route
+        server.inject('/example', () => {
+          code.expect(called).to.equal(true);
+          code.expect(calledTags).to.equal('caution');
           done();
         });
       });

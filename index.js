@@ -1,16 +1,16 @@
 'use strict';
 const defaultMethod = require('lodash.defaults');
 const defaults = {
-  deprecatedTag: 'deprecated'
+  deprecatedFilter: 'deprecated',
+  deprecatedTags: ['warning', 'hapi-deprecated']
 };
 exports.register = (server, options, next) => {
   options = defaultMethod(options, defaults);
-
   // register the tail event
   server.on('tail', (request) => {
     // if the route was tagged as deprecated, log it:
-    if (request.route.settings.tags.indexOf(options.deprecatedTag) > -1) {
-      server.log(['warning', 'hapi-deprecated'], `route '${request.route.path}' is deprecated`);
+    if (request.route.settings.tags.indexOf(options.deprecatedFilter) > -1) {
+      server.log(options.deprecatedTags, `route '${request.route.path}' is deprecated`);
     }
   });
   next();
