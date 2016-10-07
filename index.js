@@ -1,5 +1,4 @@
 'use strict';
-const scooter = require('scooter');
 const defaultMethod = require('lodash.defaults');
 const defaults = {
   tag: 'deprecated',
@@ -16,11 +15,11 @@ exports.register = (server, options, next) => {
         routePath: request.route.path,
         url: request.url,
         referrer: request.info.referrer,
-        userAgent: request.plugins.scooter.toJSON()
+        userAgent: request.headers['user-agent']
       });
     }
   });
-  server.register(scooter, next);
+  next();
 };
 exports.register.attributes = {
   pkg: require('./package.json')

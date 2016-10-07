@@ -46,7 +46,7 @@ lab.experiment('hapi-deprecated', () => {
           code.expect(keys).to.include('routePath');
           code.expect(called.url.path).to.include('/example');
           code.expect(called.message).to.include('Route is deprecated');
-          code.expect(called.userAgent.family).to.equal('Other');
+          code.expect(typeof called.userAgent).to.equal('string');
           done();
         });
       });
