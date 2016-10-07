@@ -39,8 +39,14 @@ lab.experiment('hapi-deprecated', () => {
       server.start(() => {
         // call the route
         server.inject('/example', () => {
-          code.expect(called).to.include("route '/example' is deprecated");
-          console.error = oldError;
+          called = JSON.parse(called);
+          const keys = Object.keys(called);
+          code.expect(keys.length).to.equal(5);
+          code.expect(keys).to.include('referrer');
+          code.expect(keys).to.include('routePath');
+          code.expect(called.url.path).to.include('/example');
+          code.expect(called.message).to.include('Route is deprecated');
+          code.expect(called.userAgent.family).to.equal('Other');
           done();
         });
       });
@@ -60,8 +66,8 @@ lab.experiment('hapi-deprecated', () => {
     server.register({
       register: deprecatedPlugin,
       options: {
-        deprecatedFilter: 'defunct',
-        deprecatedTags: ['caution']
+        tag: 'defunct',
+        logTags: ['caution']
       }
     }, () => {
       let called = false;

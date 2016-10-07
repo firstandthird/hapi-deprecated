@@ -14,7 +14,8 @@
   "author": "First+Third",
   "license": "MIT",
   "dependencies": {
-    "lodash.defaults": "^4.2.0"
+    "lodash.defaults": "^4.2.0",
+    "scooter": "^4.0.0"
   },
   "devDependencies": {
     "code": "^2.1.0",
