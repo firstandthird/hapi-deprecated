@@ -9,7 +9,7 @@ exports.register = (server, options, next) => {
   // register the tail event
   server.on('tail', (request) => {
     // if the route was tagged as deprecated, log it:
-    if (request.route.settings.tags.indexOf(options.tag) > -1) {
+    if (request.route.settings.tags && request.route.settings.tags.indexOf(options.tag) > -1) {
       server.log(options.logTags, {
         message: 'Route is deprecated',
         routePath: request.route.path,

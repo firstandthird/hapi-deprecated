@@ -32,7 +32,6 @@ lab.experiment('hapi-deprecated', () => {
       options: {}
     }, () => {
       let called = false;
-      const oldError = console.error;
       console.error = (pre, tags, msg) => {
         called = msg;
       };
@@ -72,7 +71,7 @@ lab.experiment('hapi-deprecated', () => {
     }, () => {
       let called = false;
       let calledTags;
-      console.error = (pre, tags, msg) => {
+      console.error = (pre, tags) => {
         calledTags = tags;
         called = true;
       };
@@ -81,6 +80,32 @@ lab.experiment('hapi-deprecated', () => {
         server.inject('/example', () => {
           code.expect(called).to.equal(true);
           code.expect(calledTags).to.equal('caution');
+          done();
+        });
+      });
+    });
+  });
+  lab.test(' does nothing if a route is not tagged', (done) => {
+    let called = false;
+    server.route({
+      path: '/example',
+      method: 'GET',
+      handler: (request, reply) => {
+        called = true;
+        reply();
+      }
+    });
+    server.register({
+      register: deprecatedPlugin,
+      options: {
+        tag: 'defunct',
+        logTags: ['caution']
+      }
+    }, () => {
+      server.start(() => {
+        // call the route
+        server.inject('/example', () => {
+          code.expect(called).to.equal(true);
           done();
         });
       });
