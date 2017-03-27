@@ -1,6 +1,6 @@
 {
   "name": "hapi-deprecated",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Plugin to log when a deprecated route is called on hapi server",
   "main": "index.js",
   "scripts": {
