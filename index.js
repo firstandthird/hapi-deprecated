@@ -13,7 +13,8 @@ exports.register = (server, options, next) => {
       server.log(options.logTags, {
         message: 'Route is deprecated',
         routePath: request.route.path,
-        url: request.url,
+        url: request.url.path,
+        method: request.method,
         referrer: request.info.referrer,
         userAgent: request.headers['user-agent']
       });

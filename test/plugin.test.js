@@ -40,10 +40,10 @@ lab.experiment('hapi-deprecated', () => {
         server.inject('/example', () => {
           called = JSON.parse(called);
           const keys = Object.keys(called);
-          code.expect(keys.length).to.equal(5);
+          code.expect(keys.length).to.equal(6);
           code.expect(keys).to.include('referrer');
           code.expect(keys).to.include('routePath');
-          code.expect(called.url.path).to.include('/example');
+          code.expect(called.url).to.include('/example');
           code.expect(called.message).to.include('Route is deprecated');
           code.expect(typeof called.userAgent).to.equal('string');
           done();
